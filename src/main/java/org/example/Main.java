@@ -15,9 +15,14 @@ public class Main {
 
             var document = Jsoup.connect("https://devmark.ru").get();
 
-        var titleElement =  document.selectFirst("title");
+//        var titleElement =  document.selectFirst("title");
+        var titleElement =  document.select("h3");
 
-            System.out.println(titleElement.text());
+        for (var element:titleElement){
+            System.out.println(element.text());
+        }
+
+//            System.out.println(titleElement.text());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
