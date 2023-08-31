@@ -7,11 +7,15 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
+
+
+
 
         while (true) {
 
             System.out.println("Hello world!");
+
 
             int min = 60000;
             int max = 120000;
@@ -20,40 +24,37 @@ public class Main {
             int randomNumber = random.nextInt(max - min + 1) + min;
 
             Thread.sleep(randomNumber);
-
-
-
-
+            Document document = null;
+            Document document1 = null;
             try {
+                document = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
+                document1 = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-
-                var document = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
-                var document1 = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
+            //                var document = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
+//                var document1 = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
 
 
 //            var titleElement =  document.select(".c-events-scoreboard__cell");
-                var titleElement = document.select(".c-events-scoreboard__line");
-                var titleElement1 = document1.select(".c-events__teams");
+            var titleElement = document.select(".c-events-scoreboard__line");
+            var titleElement1 = document1.select(".c-events__teams");
 
 
-                for (var element : titleElement) {
-                    System.out.println(element.text());
-                }
-
-
-                for (var element : titleElement1) {
-                    System.out.println(element.text());
-                }
-
-
-
-                // Очистить объекты document и document1
-                document = null;
-                document1 = null;
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            for (var element : titleElement) {
+                System.out.println(element.text());
             }
+
+
+            for (var element : titleElement1) {
+                System.out.println(element.text());
+            }
+
+
+            // Очистить объекты document и document1
+            document = null;
+            document1 = null;
 
 
         }
