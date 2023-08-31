@@ -11,6 +11,8 @@ public class Main {
 
         while (true) {
 
+            System.out.println("Hello world!");
+
             int min = 60000;
             int max = 120000;
 
@@ -19,14 +21,14 @@ public class Main {
 
             Thread.sleep(randomNumber);
 
-            System.out.println("Hello world!");
+
 
 
             try {
 
 
-                var document = Jsoup.connect("https://1xstavka.ru/live/basketball").get();
-                var document1 = Jsoup.connect("https://1xstavka.ru/live/basketball").get();
+                var document = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
+                var document1 = Jsoup.connect("https://1xstavka.ru/live/basketball").timeout(10000).get();
 
 
 //            var titleElement =  document.select(".c-events-scoreboard__cell");
