@@ -77,6 +77,12 @@ public class Dodelochka {
                     JSONObject psObject = psArray.getJSONObject(i);
                     JSONObject valueObject = psObject.getJSONObject("Value");
 
+                    // Добавьте код вывода времени
+                    String time = valueObject.optString("T", "");
+                    if (!time.isEmpty()) {
+                        System.out.println("Время: " + time);
+                    }
+
                     String nfValue = valueObject.optString("NF", "");
                     int s1Value = valueObject.optInt("S1", -1);
                     int s2Value = valueObject.optInt("S2", -1);
@@ -90,6 +96,18 @@ public class Dodelochka {
                         System.out.println("Не удалось получить значения S1 и S2 для первой четверти.");
                     }
                 }
+            } else if (key.equals("TS")) {
+//                int tsValue = jsonObject.getInt(key);
+////                System.out.println("Значение ключа 'TS': " + tsValue );
+//                System.out.println("Значение ключа 'TS': " + tsValue / 60 );
+
+                int tsValue = jsonObject.getInt(key);
+                int minutes = tsValue / 60;
+                int seconds = tsValue % 60;
+                String formattedTime = String.format("%02d:%02d", minutes, seconds);
+                System.out.println("Значение ключа 'TS': " + formattedTime);
+
+
             }
 
             Object value = jsonObject.get(key);
@@ -109,4 +127,6 @@ public class Dodelochka {
 
 
 
+
 }
+// @todo там где ищзвестно что значение ключа не являеться масивом джейсонов а только самим значением можно убрать проверку на являеться ли оно масивом джейсонов
