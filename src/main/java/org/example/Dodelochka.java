@@ -55,8 +55,8 @@ public class Dodelochka {
 
             System.out.println("Hello world!");
 
-            int min = 500000;
-            int max = 1000000;
+            int min = 10000;
+            int max = 60000;
 
             Random random = new Random();
             int randomNumber = random.nextInt(max - min + 1) + min;
