@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Random;
 
-public class Dodelochka {
+public class PoshlaLogika {
     public static void main(String[] args) throws IOException, InterruptedException {
         String url = "https://1xstavka.ru/LiveFeed/Get1x2_VZip";
         String queryString = "sports=3&count=50&antisports=188&mode=4&country=1&partner=51&getEmpty=true&noFilterBlockEvent=true";
@@ -86,8 +86,9 @@ public class Dodelochka {
                     String nfValue = valueObject.optString("NF", "");
                     int s1Value = valueObject.optInt("S1", -1);
                     int s2Value = valueObject.optInt("S2", -1);
+                    int tsValue = jsonObject.optInt("TS", -1);
 
-                    if (!nfValue.isEmpty() && s1Value != -1 && s2Value != -1) {
+                    if (!nfValue.isEmpty() && s1Value != -1 && s2Value != -1 && tsValue > 1200) {
                         if (nfValue.equals("1-я Четверть")) {
                             System.out.println("Значение S1: " + s1Value);
                             System.out.println("Значение S2: " + s2Value);
@@ -98,15 +99,9 @@ public class Dodelochka {
                 }
             } else if (key.equals("TS")) {
                 int tsValue = jsonObject.getInt(key);
-                System.out.println("Значение ключа 'TS': " + tsValue );
-
-//                int tsValue = jsonObject.getInt(key);
-//                int minutes = tsValue / 60;
-//                int seconds = tsValue % 60;
-//                String formattedTime = String.format("%02d:%02d", minutes, seconds);
-//                System.out.println("Значение ключа 'TS': " + formattedTime);
-
-
+                if (tsValue > 1200) {
+                    System.out.println("Значение ключа 'TS': " + tsValue);
+                }
             }
 
             Object value = jsonObject.get(key);
@@ -128,4 +123,4 @@ public class Dodelochka {
 
 
 }
-// @todo там где ищзвестно что значение ключа не являеться масивом джейсонов а только самим значением можно убрать проверку на являеться ли оно масивом джейсонов
+
