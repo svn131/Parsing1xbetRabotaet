@@ -43,7 +43,7 @@ public class PoshlaLogika {
 
                 try {
                     JSONObject jsonObject = new JSONObject(response.toString());
-                    printJsonStructure(jsonObject, "");
+                    printJsonStructure(jsonObject, "",false);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -55,8 +55,8 @@ public class PoshlaLogika {
 
             System.out.println("Hello world!");
 
-            int min = 5000;
-            int max = 10000;
+            int min = 60000;
+            int max = 100000;
 
             Random random = new Random();
             int randomNumber = random.nextInt(max - min + 1) + min;
@@ -65,54 +65,56 @@ public class PoshlaLogika {
         }
     }
 
-    private static void printJsonStructure(JSONObject jsonObject, String indent) throws JSONException {
-        for (String key : jsonObject.keySet()) {
-            if (key.equals("O1") || key.equals("O2")) {
-                System.out.println("Значение ключа '" + key + "': " + jsonObject.get(key));
-            } else if (key.equals("PS")) {
-                JSONArray psArray = jsonObject.getJSONArray(key);
-                System.out.println("Значения ключа 'PS' (первая четверть):");
+    private static void printJsonStructure(JSONObject jsonObject, String indent, boolean shouldSkip) throws JSONException {
+        int tsValue = jsonObject.optInt("TS", -1);
+        if (tsValue > 21000) {
+            shouldSkip = false;
+            System.out.println("Значение ключа 'TS': " + tsValue);
+        }
 
-                for (int i = 0; i < psArray.length(); i++) {
-                    JSONObject psObject = psArray.getJSONObject(i);
-                    JSONObject valueObject = psObject.getJSONObject("Value");
+        if (!shouldSkip) {
+            for (String key : jsonObject.keySet()) {
+                if (key.equals("O1") || key.equals("O2")) {
+                    System.out.println("Значение ключа '" + key + "': " + jsonObject.get(key));
+                } else if (key.equals("PS")) {
+                    JSONArray psArray = jsonObject.getJSONArray(key);
+                    System.out.println("Значения ключа 'PS' (первая четверть):");
 
-                    // Добавьте код вывода времени
-                    String time = valueObject.optString("T", "");
-                    if (!time.isEmpty()) {
-                        System.out.println("Время: " + time);
-                    }
+                    for (int i = 0; i < psArray.length(); i++) {
+                        JSONObject psObject = psArray.getJSONObject(i);
+                        JSONObject valueObject = psObject.getJSONObject("Value");
 
-                    String nfValue = valueObject.optString("NF", "");
-                    int s1Value = valueObject.optInt("S1", -1);
-                    int s2Value = valueObject.optInt("S2", -1);
-                    int tsValue = jsonObject.optInt("TS", -1);
-
-                    if (!nfValue.isEmpty() && s1Value != -1 && s2Value != -1 && tsValue > 1200) {
-                        if (nfValue.equals("1-я Четверть")) {
-                            System.out.println("Значение S1: " + s1Value);
-                            System.out.println("Значение S2: " + s2Value);
+                        // Добавьте код вывода времени
+                        String time = valueObject.optString("T", "");
+                        if (!time.isEmpty()) {
+                            System.out.println("Время: " + time);
                         }
-                    } else {
-                        System.out.println("Не удалось получить значения S1 и S2 для первой четверти.");
+
+                        String nfValue = valueObject.optString("NF", "");
+                        int s1Value = valueObject.optInt("S1", -1);
+                        int s2Value = valueObject.optInt("S2", -1);
+
+                        if (!nfValue.isEmpty() && s1Value != -1 && s2Value != -1) {
+                            if (nfValue.equals("1-я Четверть")) {
+                                System.out.println("Значение S1: " + s1Value);
+                                System.out.println("Значение S2: " + s2Value);
+                            }
+                        } else {
+                            System.out.println("Не удалось получить значения S1 и S2 для первой четверти.");
+                        }
                     }
                 }
-            } else if (key.equals("TS")) {
-                int tsValue = jsonObject.getInt(key);
-                if (tsValue > 1200) {
-                    System.out.println("Значение ключа 'TS': " + tsValue);
-                }
-            }
 
-            Object value = jsonObject.get(key);
-            if (value instanceof JSONObject) {
-                printJsonStructure((JSONObject) value, indent + "  ");
-            } else if (value instanceof JSONArray) {
-                JSONArray jsonArray = (JSONArray) value;
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    Object arrayValue = jsonArray.get(i);
-                    if (arrayValue instanceof JSONObject) {
-                        printJsonStructure((JSONObject) arrayValue, indent + "    ");
+                Object value = jsonObject.get(key);
+                if (value instanceof JSONObject) {
+                    printJsonStructure((JSONObject) value, indent + "  ", shouldSkip);
+                } else if (value instanceof JSONArray) {
+                    JSONArray jsonArray = (JSONArray) value;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        Object arrayValue = jsonArray.get(i);
+                        if (arrayValue instanceof JSONObject) {
+                            printJsonStructure((JSONObject) arrayValue, indent + "    ", shouldSkip);
+                        }
                     }
                 }
             }
