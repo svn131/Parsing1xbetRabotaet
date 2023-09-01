@@ -20,6 +20,8 @@ public class Main4 {
         con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 
         // Получение ответа от сервера
+
+
         int responseCode = con.getResponseCode();
         System.out.println("Ответ сервера: " + responseCode);
 
