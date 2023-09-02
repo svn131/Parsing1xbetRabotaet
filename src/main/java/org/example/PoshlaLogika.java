@@ -75,7 +75,7 @@ public class PoshlaLogika {
 
     private static void printJsonStructure(JSONObject jsonObject, String indent, boolean shouldSkip) throws JSONException {
         int tsValue = jsonObject.optInt("TS", -1);
-        if (tsValue > 21000) {
+        if (tsValue > 1) {   // @todo логика времени
             shouldSkip = false;
             System.out.println("Значение ключа 'TS': " + tsValue);
         }
