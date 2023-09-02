@@ -18,40 +18,48 @@ public class PoshlaLogika {
         String queryString = "sports=3&count=50&antisports=188&mode=4&country=1&partner=51&getEmpty=true&noFilterBlockEvent=true";
 
         while (true) {
-            URL obj = new URL(url + "?" + queryString);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            try {
+                URL obj = new URL(url + "?" + queryString);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            // Set request method and headers
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                // Set request method and headers
+                con.setRequestMethod("GET");
+                con.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
 
-            // Get the server response
-            int responseCode = con.getResponseCode();
-            System.out.println("Server Response: " + responseCode);
+                // Get the server response
+                int responseCode = con.getResponseCode();
+                System.out.println("Server Response: " + responseCode);
 
-            // Read the server response
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                InputStream inputStream = con.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                StringBuilder response = new StringBuilder();
+                // Read the server response
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = con.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    StringBuilder response = new StringBuilder();
 
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.toString());
+                        printJsonStructure(jsonObject, "", false);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Failed to get server response");
                 }
-                reader.close();
 
-                try {
-                    JSONObject jsonObject = new JSONObject(response.toString());
-                    printJsonStructure(jsonObject, "",false);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                System.out.println("Failed to get server response");
+                con.disconnect();
+            } catch (java.net.ConnectException e) {
+                System.out.println("Ошибка подключения: " + e.getMessage());
+
+                // Ожидание 10 минут перед повторной попыткой отправки запроса
+                int sleepTime = 10 * 60 * 1000; // 10 минут в миллисекундах
+                Thread.sleep(sleepTime);
             }
-
-            con.disconnect();
 
             System.out.println("Hello world!");
 
